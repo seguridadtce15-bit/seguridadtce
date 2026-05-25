@@ -62,7 +62,6 @@
             color: var(--primary-color);
         }
 
-        /* Cambiado a flex vertical en móvil, vuelve a rejilla en pantallas grandes */
         .header-info, .selectors-grid {
             display: flex;
             flex-direction: column;
@@ -92,12 +91,12 @@
 
         input, select, textarea {
             width: 100%;
-            padding: 12px; /* Más alto para facilitar el toque con dedos */
+            padding: 12px; 
             border: 1px solid var(--border-color);
             border-radius: 6px;
-            font-size: 16px; /* Evita que iOS haga zoom automático molesto */
+            font-size: 16px; 
             background-color: #fff;
-            -webkit-appearance: none; /* Estilo nativo limpio en móviles */
+            -webkit-appearance: none; 
             appearance: none;
         }
 
@@ -120,7 +119,7 @@
 
         .inspeccion-main {
             display: flex;
-            flex-direction: column; /* Apilado en móvil para que textos largos no se rompan */
+            flex-direction: column; 
             align-items: flex-start;
             gap: 10px;
         }
@@ -134,7 +133,6 @@
             width: 100%;
         }
 
-        /* Área táctil del Checkbox mejorada */
         .check-label input[type="checkbox"] {
             width: 24px;
             height: 24px;
@@ -147,7 +145,7 @@
 
         .check-label span {
             padding-top: 2px;
-            word-break: break-word; /* Evita desparrames de texto largo */
+            word-break: break-word; 
         }
 
         .inspeccion-item.con-deficiencia {
@@ -161,7 +159,7 @@
             border-radius: 12px;
             background: #e2e6ea;
             font-weight: bold;
-            align-self: flex-end; /* Lo alinea a la derecha de su contenedor flexible */
+            align-self: flex-end; 
         }
 
         .inspeccion-item.con-deficiencia .badge-estado {
@@ -206,18 +204,11 @@
             margin: 15px 0;
         }
 
-        /* ==========================================
-           MEDIA QUERIES PARA PANTALLAS GRANDES (TABLET / PC)
-           ========================================== */
         @media (min-width: 600px) {
             body { padding: 20px; }
             .container { padding: 30px; }
             h1 { font-size: 2em; }
             .header-info {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .selectors-grid {
                 display: grid;
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -259,7 +250,7 @@
 
     <div class="selectors-grid">
         <div class="form-group">
-            <label for="area-select">1. Seleccione Área de la Planta:</label>
+            <label for="area-select">Seleccione Área de la Planta:</label>
             <select id="area-select" onchange="cambiarArea()" style="font-weight: bold; cursor: pointer;">
                 <option value="">-- Seleccione una opción --</option>
                 <option value="area1">1.- PATIO DE VIAS</option>
@@ -272,31 +263,11 @@
                 <option value="area8">8.- MUELLE # 5 NORTE</option>
             </select>
         </div>
-
-        <div class="form-group">
-            <label for="otros-select">2. Controles e Inspecciones Especiales:</label>
-            <select id="otros-select" onchange="cambiarOtros()" style="font-weight: bold; cursor: pointer;">
-                <option value="">-- Seleccione una opción --</option>
-                <option value="otro0">Calibración de Atmosferas</option>
-                <option value="otro1">Inspección de Escaleras Portátiles</option>
-                <option value="otro2">Inspección de Respirador (No adecuado)</option>
-                <option value="otro3">Inspección de Tanque de Diesel</option>
-                <option value="otro4">Inspección a Unidades de Ferrocarril</option>
-                <option value="otro5">Inspección de Sistema Contra incendios</option>
-                <option value="otro6">Inspección a extintor</option>
-                <option value="otro7">Prueba de GFCI</option>
-                <option value="otro8">Inspección de Equipo de Rescate de Estructuras de Almacenamiento</option>
-                <option value="otro9">Contenido de Kit. Primeros auxilios</option>
-                <option value="otro10">Detector de CO2</option>
-                <option value="otro11">Prueba Anual de la válvula de descarga de compresor</option>
-            </select>
-        </div>
     </div>
 
-    <p class="instruccion" id="instruccion-texto">Por favor, seleccione un área o control especial en la parte superior. Marque la casilla si detecta anomalías.</p>
+    <p class="instruccion" id="instruccion-texto">Por favor, seleccione un área en la parte superior. Marque la casilla si detecta anomalías.</p>
 
     <div id="referencias-contenedor"></div>
-    <div id="otros-contenedor"></div>
 
     <div class="actions-panel">
         <button class="btn btn-excel" onclick="enviarAExcel()">Guardar y Enviar Reporte</button>
@@ -327,13 +298,6 @@
         area7: { titulo: "7.- BRIGGS", puntos: ["CASETA VIGILANCIA #5", "ALMACEN TEMPORARAL RME", "ALMACEN BARREDURA", "TALLER DE BIGGS", "AREA DE LAVADO", "TRAMPA DE GRASAS", "AREA DE ABANDONO"] },
         area8: { titulo: "8.- MUELLE # 5 NORTE", puntos: ["ELEVADOR DE CANGILONES EC8/EC9", "TRANSPORTADOR TB1 NORTE / TB1 SUR", "TRANSPORTADOR TB21 / TB22", "MODULO TB21 / TB22", "TRANSPORTADOR TB2 / TB3", "TOLVAS RECEPTORAS", "ALMEJAS", "PLATAFORMA PARA ALMEJAS (BURROS)", "EXTINTORES/SEÑALERICAS/GUARDAS", "ESCALERAS/PASAMANOS/BARANDALES"] }
     };
-
-    const otrosItems = [
-        "Calibración de Atmosferas", "Inspección de Escaleras Portátiles", "Inspección de Respirador (No adecuado)",
-        "Inspección de Tanque de Diesel", "Inspección a Unidades de Ferrocarril", "Inspección de Sistema Contra incendios",
-        "Inspección a extintor", "Prueba de GFCI", "Inspección de Equipo de Rescate de Estructuras de Almacenamiento",
-        "Contenido de Kit. Primeros auxilios", "Detector de CO2", "Prueba Anual de la válvula de descarga de compresor"
-    ];
 
     let puntosRegistrados = [];
 
@@ -384,41 +348,6 @@
             divArea.innerHTML = htmlContenido;
             contenedorRef.appendChild(divArea);
         }
-
-        const contenedorOtros = document.getElementById('otros-contenedor');
-        otrosItems.forEach((otro, index) => {
-            let itemId = `otro-item-${index}`;
-            puntosRegistrados.push({ id: itemId, area: "Especiales / Otros", nombrePunto: otro });
-
-            let divOtro = document.createElement('div');
-            divOtro.id = `wrapper-otro-${index}`;
-            divOtro.className = "reference-section-otros";
-            divOtro.style.display = "none";
-
-            divOtro.innerHTML = `
-                <h2>Controles Especiales</h2>
-                <div class="inspeccion-item" id="container-${itemId}">
-                    <div class="inspeccion-main">
-                        <label class="check-label">
-                            <input type="checkbox" id="${itemId}" onchange="evaluarRiesgo('${itemId}')">
-                            <span>${otro}</span>
-                        </label>
-                        <span class="badge-estado" id="badge-${itemId}">Correcto</span>
-                    </div>
-                    <div class="panel-deficiencia" id="panel-${itemId}">
-                        <div class="form-group">
-                            <label style="color: var(--danger-color);">Deficiencia Detectada:</label>
-                            <select id="tipo-${itemId}">${opcionesRiesgosHTML}</select>
-                        </div>
-                        <div class="form-group">
-                            <label>Notas / Observaciones:</label>
-                            <textarea id="obs-${itemId}" placeholder="Detalles de la anomalía..." rows="2"></textarea>
-                        </div>
-                    </div>
-                </div>
-            `;
-            contenedorOtros.appendChild(divOtro);
-        });
     }
 
     function cambiarArea() {
@@ -428,24 +357,7 @@
         document.querySelectorAll('.reference-section').forEach(s => s.style.display = 'none');
         
         if (areaSeleccionada) {
-            document.getElementById('otros-select').value = "";
-            document.querySelectorAll('.reference-section-otros').forEach(s => s.style.display = 'none');
             document.getElementById(areaSeleccionada).style.display = 'block';
-        }
-    }
-
-    function cambiarOtros() {
-        const selectorOtros = document.getElementById('otros-select');
-        const seleccion = selectorOtros.value;
-
-        document.querySelectorAll('.reference-section-otros').forEach(s => s.style.display = 'none');
-
-        if (seleccion) {
-            document.getElementById('area-select').value = "";
-            document.querySelectorAll('.reference-section').forEach(s => s.style.display = 'none');
-            
-            let index = seleccion.replace('otro', '');
-            document.getElementById(`wrapper-otro-${index}`).style.display = 'block';
         }
     }
 
@@ -462,7 +374,7 @@
         } else {
             panel.style.display = 'none';
             contenedor.classList.remove('con-deficiencia');
-            badge.innerText = id.includes('otro') ? "Correcto" : "Sin novedades";
+            badge.innerText = "Sin novedades";
             document.getElementById(`tipo-${id}`).value = "";
             document.getElementById(`obs-${id}`).value = "";
         }
