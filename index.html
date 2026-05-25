@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check List Operativo - TCE JC5 Veracruz</title>
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-color: #333;
+            --danger-color: #dc3545;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        h1 { text-align: center; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; }
+        h2 { margin-top: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; font-size: 1.4em; }
+
+        .header-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            background: var(--secondary-color);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        input, select, textarea {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .selectors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .inspeccion-item {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 10px;
+            padding: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .inspeccion-main {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .check-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 1.05em;
+            flex: 1;
+        }
+
+        .check-label input[type="checkbox"] {
+            transform: scale(1.3);
+            cursor: pointer;
+        }
+
+        .inspeccion-item.con-deficiencia {
+            border-left: 5px solid var(--danger-color);
+            background-color: #fff8f8;
+        }
+
+        .badge-estado {
+            font-size: 0.85em;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background: #e2e6ea;
+            font-weight: bold;
+        }
+
+        .inspeccion-item.con-deficiencia .badge-estado {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .panel-deficiencia {
+            display: none;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed #f5c6cb;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .actions-panel {
+            display: flex;
+            margin-top: 30px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-excel { background: #1f7246; }
+        .btn-excel:hover { background: #165231; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Manual de Operación de Planta</h1>
+    <p style="text-align: center; font-weight: bold; margin-top: -10px;">Terminales de Cargas Especializadas - JC5 Veracruz</p>
+
+    <div class="header-info">
+        <div class="form-group">
+            <label>Instalación:</label>
+            <input type="text" value="JC5 veracruz" id="inspeccion-instalacion" readonly style="font-weight: bold; background: #e9ecef;">
+        </div>
+        <div class="form-group">
+            <label>Fecha de Inspección:</label>
+            <input type="date" id="inspeccion-fecha">
+        </div>
+        <div class="form-group">
+            <label>Matrícula:</label>
+            <input type="text" id="inspector-matricula" placeholder="Ej: MTR-9542">
+        </div>
+        <div class="form-group">
+            <label>Persona que realiza Inspección:</label>
+            <input type="text" id="inspector-nombre" placeholder="Nombre y Apellidos">
+        </div>
+    </div>
+
+    <div class="selectors-grid">
+        <div class="form-group">
+            <label for="area-select" style="font-size: 1em;">1. Seleccione Área de la Planta:</label>
+            <select id="area-select" onchange="cambiarArea()" style="width: 100%; padding: 10px; font-weight: bold; cursor: pointer;">
+                <option value="">-- Seleccione una opción --</option>
+                <option value="area1">1.- PATIO DE VIAS</option>
+                <option value="area2">2.- ANDEN DE CARGA</option>
+                <option value="area3">3.- SILOS II</option>
+                <option value="area4">4.- BODEGA</option>
+                <option value="area5">5.- OFICINAS Y TALLERES</option>
+                <option value="area6">6.- SECCION SILOS I</option>
+                <option value="area7">7.- BRIGGS</option>
+                <option value="area8">8.- MUELLE # 5 NORTE</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="otros-select" style="font-size: 1em;">2. Controles e Inspecciones Especiales:</label>
+            <select id="otros-select" onchange="cambiarOtros()" style="width: 100%; padding: 10px; font-weight: bold; cursor: pointer;">
+                <option value="">-- Seleccione una opción --</option>
+                <option value="otro0">Calibración de Atmosferas</option>
+                <option value="otro1">Inspección de Escaleras Portátiles</option>
+                <option value="otro2">Inspección de Respirador (No adecuado)</option>
+                <option value="otro3">Inspección de Tanque de Diesel</option>
+                <option value="otro4">Inspección a Unidades de Ferrocarril</option>
+                <option value="otro5">Inspección de Sistema Contra incendios</option>
+                <option value="otro6">Inspección a extintor</option>
+                <option value="otro7">Prueba de GFCI</option>
+                <option value="otro8">Inspección de Equipo de Rescate de Estructuras de Almacenamiento</option>
+                <option value="otro9">Contenido de Kit. Primeros auxilios</option>
+                <option value="otro10">Detector de CO2</option>
+                <option value="otro11">Prueba Anual de la válvula de descarga de compresor</option>
+            </select>
+        </div>
+    </div>
+
+    <p style="color: #555; font-style: italic;" id="instruccion-texto">← Seleccione un área o control especial arriba. Marque la casilla si observa anomalías para desplegar el catálogo de riesgos.</p>
+
+    <div id="referencias-contenedor"></div>
+    <div id="otros-contenedor"></div>
+
+    <div class="actions-panel">
+        <button class="btn btn-excel" onclick="enviarAExcel()">Guardar y Enviar Reporte</button>
+    </div>
+</div>
+
+<script>
+    // =========================================================================
+    // PEGA TU ENLACE DE GOOGLE EN LA VARIABLE DE ABAJO:
+    // =========================================================================
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyyZuLnXDjyPGvTdZ_kvt57h3CW3QFEWEkHl6Xu8uZSDB4uuSPMhU9yK0OasjtbUjKX/exec";
+
+    const catalogoDeficiencias = [
+        "Resbalones / Caídas / Trabajos en Alturas",
+        "Orden y limpieza",
+        "Electricidad / Iluminación / Instalaciones a prueba de Explosión / Sistema Tierras",
+        "Planta Física (Protecciones, Guardas, Barandales, Pasillos y Superficies de Trabajo)",
+        "Mantenimiento Mecánico / Transportadores / Elevadores",
+        "Fuego / Riesgos de Incendio / Riesgo de Explosión / Permiso de Trabajo en caliente",
+        "Buen Vecino / Apariencia de la planta / Señalización y Avisos",
+        "Otras Deficiencias"
+    ];
+
+    const baseDatosAreas = {
+        area1: { titulo: "1.- PATIO DE VIAS", puntos: ["CELDA DE CARGA CC6", "RETRACTIL/ TROL/SWINGATE", "BARANDALES/ESCALERAS/PLATAFORMA", "CASETA BASCULA FFCC", "CASETA DE VIGILANCIA #4", "EST. DE GAS/EXTINTORES/SEÑALETICAS", "EST. DE DIESEL/EXTINTORES SEÑALETICAS", "CASETA BASCULA CASETA 4", "BLOCKSTOP VIA 34/35/36/37/38/39/40/41/42", "CAMBIO #1", "CAMBIO #2", "CAMBIO #3", "CAMBIO #4", "CAMBIO #5", "CAMBIO #6", "CAMBIO #7", "CAMBIO #8", "CAMBIO #9", "ZONA ROJA VIA 42/BANDERAS AZULES", "BARDA PERIMETRAL/CONCERTINA"] },
+        area2: { titulo: "2.- ANDEN DE CARGA", puntos: ["INTERIOR DE ANDEN VIA1/VIA2", "VIA DE ESCAPE", "PASILLO VIA 1/ COLECTOR POLVO VIA1", "PASILLO VIA 2/ COLECTOR POLVO VIA2", "RETRACTILES/TROL/SWINGATE", "BARANDALES/ESCALERAS/PLATAFORMA", "SOTANO DE BKT´S / SEÑALETICAS", "TB6 / GUARDAS / EXTINTORES / SEÑALETICAS", "TB4 / GUARDAS / EXTINTORES / SEÑALETICAS", "TC38 / GUARDAS / EXTINTORES / SEÑALETICAS", "TC47 / GUARDAS / EXTINTORES / SEÑALETICAS", "TECHO DE ANDEN DE CARGA / ESCALERAS", "CELDA DE CARGA CC2", "CELDA DE CARGA CC3", "CELDA DE CARGA CC4", "CENTRO DE CONTROL DE MAQUINAS CCMA", "ZONA ROJA VIA 1/ VIA ESCAPE"] },
+        area3: { titulo: "3.- SILOS II", puntos: ["CENTRO CONTROL DE MAQUINAS CCM22", "ELEVADOR DE CANGILONES EC6/EC7", "FOSOS/EC6/EC7", "TB7//TB15/TB16/TB17/TB18 /TB19", "TC39/TC40/TC41/TC42/TC43/TC44/TC45/TC45", "CELDA DE CARGA CC5", "VIALIDAD S7/S8/S9/S10/S11", "ILUMINACION S7/S8/S9/S10/S11", "PUERTAS/ESCALERAS S7/S8/S9/S10/S11", "FUENTE DE PODER (BARREDORA)", "TALLER DE ALMEJAS", "TALLER CONTRATISTAS", "TANQUES DE MELAZA", "CUARTO DE BOMBAS MELAZA", "CASETA DE RESID PELIGROSOS / ILUMINACION / EXTINTORES", "CASETA CONTROL AVIAR", "CASETA MOTORES MANTTO", "BARDA PERIMETRAL/ CONCERTINA"] },
+        area4: { titulo: "4.- BODEGA", puntos: ["PASILLO LADO NORTE / SUR", "PASILLO LADO TIERRA/MAR", "EDIFICIO DE BASCULAS/ESCALERAS", "ELEVADOR DE CANGILONES EC1/EC2", "FOSO EC1/EC2/TC7/TC8/TC9/TC10", "TC3/TC4/TC7/TC8/TC9TC10/TC11", "CELDA DE CARGA TL1", "TUNEL CENTRAL DE BODEGA", "TC1/TC1 BIS/TC2/TC2BIS", "GARITAS DE ALMACEN", "CASETA DE TANQUES OXIGENO / ACETILINEO", "EXTINTORES / SEÑALETICAS", "TB4/ V6 / CONTRAPESO", "ESCALERAS/PASAMANOS/BARANDALES", "VIALIDAD CASETA 3", "CASETA BASCULA CASETA 3", "CASETA DE VIGILANCIA #3", "CCTV / AGENCIAS ADUANALES", "PULPO NORTE / PULPO SUR"] },
+        area5: { titulo: "5.- OFICINAS Y TALLERES", puntos: ["SUBESTACION ELECTRICA", "TALLER ELECTRICO", "TALLER DE SOLDADURA", "TALLER MECANICO / TORNO", "GARITAS DE MANTENIMIENTO", "OFICINAS NOMBRAMIENTOS", "ALMACEN GENERAL", "GARITAS DE ALMACEN", "BAÑOS Y VESTIDORES GENERALES", "COMEDOR", "OFICINA DE MANTENIMIENTO", "OFICINA DE SEGURIDAD", "ALMACEN # 2", "CENTRO DE CONTROL DE MAQUINAS CCM5", "CENTROL DE CONTROL DE OPERACIONES CCO", "BAÑOS CCO", "CASETA # 1", "OFICINAS ADMINISTRATVAS"] },
+        area6: { titulo: "6.- SECCION SILOS I", puntos: ["TUNEL DE SILOS NONES", "TUNEL DE SILOS PARES", "TC31/TC33/TC32/TC34/TC35", "ELEVADOR DE CANGILONES EC5", "FOSO EC4/EC5", "CENTRO DE CONTROL DE MAQUINAS CCMSI", "TB6/ V10/V11", "V3V/TB10/TB12/", "TB8/V4V/TB11/TB13", "ESCALERAS/PASAMANOS/BARANDALES", "EXTINTORES/SEÑALERICAS/GUARDAS", "BARDA PERIMETRAL/ CONCERTINA / AREAS VERDES", "EXPLANADA SILOS 1/ ILUMINACION", "FUENTE DE PODER (BARREDORA)"] },
+        area7: { titulo: "7.- BRIGGS", puntos: ["CASETA VIGILANCIA #5", "ALMACEN TEMPORARAL RME", "ALMACEN BARREDURA", "TALLER DE BIGGS", "AREA DE LAVADO", "TRAMPA DE GRASAS", "AREA DE ABANDONO"] },
+        area8: { titulo: "8.- MUELLE # 5 NORTE", puntos: ["ELEVADOR DE CANGILONES EC8/EC9", "TRANSPORTADOR TB1 NORTE / TB1 SUR", "TRANSPORTADOR TB21 / TB22", "MODULO TB21 / TB22", "TRANSPORTADOR TB2 / TB3", "TOLVAS RECEPTORAS", "ALMEJAS", "PLATAFORMA PARA ALMEJAS (BURROS)", "EXTINTORES/SEÑALERICAS/GUARDAS", "ESCALERAS/PASAMANOS/BARANDALES"] }
+    };
+
+    const otrosItems = [
+        "Calibración de Atmosferas", "Inspección de Escaleras Portátiles", "Inspección de Respirador (No adecuado)",
+        "Inspección de Tanque de Diesel", "Inspección a Unidades de Ferrocarril", "Inspección de Sistema Contra incendios",
+        "Inspección a extintor", "Prueba de GFCI", "Inspección de Equipo de Rescate de Estructuras de Almacenamiento",
+        "Contenido de Kit. Primeros auxilios", "Detector de CO2", "Prueba Anual de la válvula de descarga de compresor"
+    ];
+
+    let puntosRegistrados = [];
+
+    function inicializarApp() {
+        document.getElementById('inspeccion-fecha').valueAsDate = new Date();
+        const contenedorRef = document.getElementById('referencias-contenedor');
+
+        let opcionesRiesgosHTML = `<option value="">-- Seleccione el Riesgo Detectado --</option>`;
+        catalogoDeficiencias.forEach(def => {
+            opcionesRiesgosHTML += `<option value="${def}">${def}</option>`;
+        });
+
+        // Cargar Áreas
+        for (let id in baseDatosAreas) {
+            let area = baseDatosAreas[id];
+            let divArea = document.createElement('div');
+            divArea.id = id;
+            divArea.className = "reference-section";
+            divArea.style.display = "none";
+            
+            let htmlContenido = `<h2>${area.titulo}</h2>`;
+            
+            area.puntos.forEach((punto, index) => {
+                let itemId = `${id}-item-${index+1}`;
+                puntosRegistrados.push({ id: itemId, area: area.titulo, nombrePunto: punto });
+                
+                htmlContenido += `
+                    <div class="inspeccion-item" id="container-${itemId}">
+                        <div class="inspeccion-main">
+                            <label class="check-label">
+                                <input type="checkbox" id="${itemId}" onchange="evaluarRiesgo('${itemId}')">
+                                <span><strong>${index+1}.-</strong> ${punto}</span>
+                            </label>
+                            <span class="badge-estado" id="badge-${itemId}">Sin novedades</span>
+                        </div>
+                        <div class="panel-deficiencia" id="panel-${itemId}">
+                            <div class="form-group">
+                                <label style="color: var(--danger-color);">Deficiencia / Riesgo Oficial:</label>
+                                <select id="tipo-${itemId}">${opcionesRiesgosHTML}</select>
+                            </div>
+                            <div class="form-group">
+                                <label>Notas y Detalles Específicos (Opcional):</label>
+                                <textarea id="obs-${itemId}" placeholder="Ej: Guarda floja, falta de orden..." rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            divArea.innerHTML = htmlContenido;
+            contenedorRef.appendChild(divArea);
+        }
+
+        // Cargar Especiales
+        const contenedorOtros = document.getElementById('otros-contenedor');
+        otrosItems.forEach((otro, index) => {
+            let itemId = `otro-item-${index}`;
+            puntosRegistrados.push({ id: itemId, area: "Especiales / Otros", nombrePunto: otro });
+
+            let divOtro = document.createElement('div');
+            divOtro.id = `wrapper-otro-${index}`;
+            divOtro.className = "reference-section-otros";
+            divOtro.style.display = "none";
+
+            divOtro.innerHTML = `
+                <h2>Controles Especiales</h2>
+                <div class="inspeccion-item" id="container-${itemId}">
+                    <div class="inspeccion-main">
+                        <label class="check-label">
+                            <input type="checkbox" id="${itemId}" onchange="evaluarRiesgo('${itemId}')">
+                            <span>${otro}</span>
+                        </label>
+                        <span class="badge-estado" id="badge-${itemId}">Correcto</span>
+                    </div>
+                    <div class="panel-deficiencia" id="panel-${itemId}">
+                        <div class="form-group">
+                            <label style="color: var(--danger-color);">Deficiencia Detectada:</label>
+                            <select id="tipo-${itemId}">${opcionesRiesgosHTML}</select>
+                        </div>
+                        <div class="form-group">
+                            <label>Notas / Observaciones:</label>
+                            <textarea id="obs-${itemId}" placeholder="Detalles de la anomalía..." rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+            `;
+            contenedorOtros.appendChild(divOtro);
+        });
+    }
+
+    function cambiarArea() {
+        const selectorArea = document.getElementById('area-select');
+        const areaSeleccionada = selectorArea.value;
+        
+        document.querySelectorAll('.reference-section').forEach(s => s.style.display = 'none');
+        
+        if (areaSeleccionada) {
+            document.getElementById('otros-select').value = "";
+            document.querySelectorAll('.reference-section-otros').forEach(s => s.style.display = 'none');
+            document.getElementById(areaSeleccionada).style.display = 'block';
+        }
+    }
+
+    function cambiarOtros() {
+        const selectorOtros = document.getElementById('otros-select');
+        const seleccion = selectorOtros.value;
+
+        document.querySelectorAll('.reference-section-otros').forEach(s => s.style.display = 'none');
+
+        if (seleccion) {
+            document.getElementById('area-select').value = "";
+            document.querySelectorAll('.reference-section').forEach(s => s.style.display = 'none');
+            
+            let index = seleccion.replace('otro', '');
+            document.getElementById(`wrapper-otro-${index}`).style.display = 'block';
+        }
+    }
+
+    function evaluarRiesgo(id) {
+        const checkbox = document.getElementById(id);
+        const panel = document.getElementById(`panel-${id}`);
+        const contenedor = document.getElementById(`container-${id}`);
+        const badge = document.getElementById(`badge-${id}`);
+
+        if (checkbox.checked) {
+            panel.style.display = 'grid';
+            contenedor.classList.add('con-deficiencia');
+            badge.innerText = "Con Deficiencia";
+        } else {
+            panel.style.display = 'none';
+            contenedor.classList.remove('con-deficiencia');
+            badge.innerText = id.includes('otro') ? "Correcto" : "Sin novedades";
+            document.getElementById(`tipo-${id}`).value = "";
+            document.getElementById(`obs-${id}`).value = "";
+        }
+    }
+
+    function enviarAExcel() {
+        const matricula = document.getElementById('inspector-matricula').value.trim();
+        const nombre = document.getElementById('inspector-nombre').value.trim();
+        const fecha = document.getElementById('inspeccion-fecha').value;
+
+        if (!matricula || !nombre) {
+            alert("Por favor ingrese Matrícula y Nombre del inspector antes de guardar.");
+            return;
+        }
+
+        let deficienciasEncontradas = [];
+        puntosRegistrados.forEach(p => {
+            if (document.getElementById(p.id).checked) {
+                let riesgoSeleccionado = document.getElementById(`tipo-${p.id}`).value;
+                let notasAdicionales = document.getElementById(`obs-${p.id}`).value.trim();
+
+                let textoDeficienciaCompleto = riesgoSeleccionado;
+                if(notasAdicionales) {
+                    textoDeficienciaCompleto += " (" + notasAdicionales + ")";
+                }
+
+                if(!riesgoSeleccionado) {
+                    textoDeficienciaCompleto = "Otras Deficiencias / No especificado en menú";
+                }
+
+                deficienciasEncontradas.push({
+                    area: p.area,
+                    punto: p.nombrePunto,
+                    deficiencia: textoDeficienciaCompleto
+                });
+            }
+        });
+
+        if (deficienciasEncontradas.length === 0) {
+            alert("No se han registrado deficiencias en esta inspección.");
+            return;
+        }
+
+        let paquete = {
+            fechaInspeccion: fecha,
+            matricula: matricula,
+            inspector: nombre,
+            reportes: deficienciasEncontradas
+        };
+
+        if(WEB_APP_URL === "PEGA_AQUI_TU_URL_DE_GOOGLE_APPS_SCRIPT" || WEB_APP_URL.trim() === "") {
+            alert("Atención: No has pegado la URL de tu Google Script en la parte superior del código (Variable WEB_APP_URL).");
+            return;
+        }
+
+        fetch(WEB_APP_URL, {
+            method: "POST",
+            mode: "no-cors",
+            cache: "no-cache",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(paquete)
+        }).then(() => {
+            alert("¡Reporte enviado! Los datos se cargaron al Excel para su respectivo seguimiento.");
+        }).catch(err => {
+            alert("Error al enviar: " + err);
+        });
+    }
+
+    window.onload = inicializarApp;
+</script>
+</body>
+</html>
