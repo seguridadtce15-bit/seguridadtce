@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Check List Operativo - TCE JC5 Veracruz</title>
     <style>
         :root {
@@ -11,112 +11,157 @@
             --border-color: #dee2e6;
             --text-color: #333;
             --danger-color: #dc3545;
+            --success-color: #1f7246;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.5;
             color: var(--text-color);
-            background-color: #f4f6f9;
+            background-color: #f0f2f5;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
         }
 
         .container {
-            max-width: 950px;
+            width: 100%;
+            max-width: 800px;
             margin: 0 auto;
             background: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        h1, h2, h3 {
-            color: var(--primary-color);
-            margin-top: 0;
-        }
-
-        h1 { text-align: center; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; }
-        h2 { margin-top: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; font-size: 1.4em; }
-
-        .header-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            background: var(--secondary-color);
             padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+
+        h1 { 
+            font-size: 1.6em;
+            text-align: center; 
+            color: var(--primary-color);
+            margin: 10px 0 5px 0;
+            padding-bottom: 8px;
+        }
+        
+        .subtitle {
+            text-align: center; 
+            font-weight: bold; 
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+            color: #555;
+        }
+
+        h2 { 
+            margin-top: 25px; 
+            border-bottom: 2px solid var(--border-color); 
+            padding-bottom: 5px; 
+            font-size: 1.2em; 
+            color: var(--primary-color);
+        }
+
+        /* Cambiado a flex vertical en móvil, vuelve a rejilla en pantallas grandes */
+        .header-info, .selectors-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--secondary-color);
+            padding: 12px;
             border-radius: 6px;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .selectors-grid {
+            background: #e9ecef;
         }
 
         .form-group {
             display: flex;
             flex-direction: column;
+            width: 100%;
         }
 
         label {
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-weight: 600;
+            margin-bottom: 6px;
             font-size: 0.9em;
         }
 
         input, select, textarea {
-            padding: 8px;
+            width: 100%;
+            padding: 12px; /* Más alto para facilitar el toque con dedos */
             border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 16px; /* Evita que iOS haga zoom automático molesto */
+            background-color: #fff;
+            -webkit-appearance: none; /* Estilo nativo limpio en móviles */
+            appearance: none;
         }
 
-        .selectors-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 15px;
-            background: #e9ecef;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
+        select {
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M0 3l5 5 5-5z' fill='%23333'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 12px;
+            padding-right: 30px;
         }
 
         .inspeccion-item {
             background: #fff;
             border: 1px solid var(--border-color);
-            border-radius: 6px;
-            margin-bottom: 10px;
-            padding: 12px;
-            transition: all 0.2s ease;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            padding: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
 
         .inspeccion-main {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
+            flex-direction: column; /* Apilado en móvil para que textos largos no se rompan */
+            align-items: flex-start;
+            gap: 10px;
         }
 
         .check-label {
             display: flex;
-            align-items: center;
-            gap: 10px;
+            align-items: flex-start;
+            gap: 12px;
             cursor: pointer;
-            font-size: 1.05em;
-            flex: 1;
+            font-size: 1em;
+            width: 100%;
         }
 
+        /* Área táctil del Checkbox mejorada */
         .check-label input[type="checkbox"] {
-            transform: scale(1.3);
+            width: 24px;
+            height: 24px;
+            margin: 0;
+            flex-shrink: 0;
             cursor: pointer;
+            -webkit-appearance: checkbox;
+            appearance: checkbox;
+        }
+
+        .check-label span {
+            padding-top: 2px;
+            word-break: break-word; /* Evita desparrames de texto largo */
         }
 
         .inspeccion-item.con-deficiencia {
-            border-left: 5px solid var(--danger-color);
+            border-left: 6px solid var(--danger-color);
             background-color: #fff8f8;
         }
 
         .badge-estado {
-            font-size: 0.85em;
-            padding: 4px 8px;
+            font-size: 0.8em;
+            padding: 4px 10px;
             border-radius: 12px;
             background: #e2e6ea;
             font-weight: bold;
+            align-self: flex-end; /* Lo alinea a la derecha de su contenedor flexible */
         }
 
         .inspeccion-item.con-deficiencia .badge-estado {
@@ -126,16 +171,15 @@
 
         .panel-deficiencia {
             display: none;
-            margin-top: 12px;
-            padding-top: 12px;
+            margin-top: 15px;
+            padding-top: 15px;
             border-top: 1px dashed #f5c6cb;
-            grid-template-columns: 1fr;
-            gap: 15px;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .actions-panel {
-            display: flex;
-            margin-top: 30px;
+            margin-top: 25px;
         }
 
         .btn {
@@ -143,27 +187,61 @@
             padding: 16px;
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.2s;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .btn-excel { background: #1f7246; }
-        .btn-excel:hover { background: #165231; }
+        .btn-excel { background: var(--success-color); }
+        .btn-excel:active { background: #165231; }
+
+        .instruccion {
+            color: #555; 
+            font-style: italic; 
+            font-size: 0.9em;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        /* ==========================================
+           MEDIA QUERIES PARA PANTALLAS GRANDES (TABLET / PC)
+           ========================================== */
+        @media (min-width: 600px) {
+            body { padding: 20px; }
+            .container { padding: 30px; }
+            h1 { font-size: 2em; }
+            .header-info {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .selectors-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .inspeccion-main {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .badge-estado {
+                align-self: center;
+            }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Manual de Operación de Planta</h1>
-    <p style="text-align: center; font-weight: bold; margin-top: -10px;">Terminales de Cargas Especializadas - JC5 Veracruz</p>
+    <p class="subtitle">Terminales de Cargas Especializadas - JC5 Veracruz</p>
 
     <div class="header-info">
         <div class="form-group">
             <label>Instalación:</label>
-            <input type="text" value="JC5 veracruz" id="inspeccion-instalacion" readonly style="font-weight: bold; background: #e9ecef;">
+            <input type="text" value="JC5 veracruz" id="inspeccion-instalacion" readonly style="font-weight: bold; background: #e9ecef; color: #495057;">
         </div>
         <div class="form-group">
             <label>Fecha de Inspección:</label>
@@ -181,8 +259,8 @@
 
     <div class="selectors-grid">
         <div class="form-group">
-            <label for="area-select" style="font-size: 1em;">1. Seleccione Área de la Planta:</label>
-            <select id="area-select" onchange="cambiarArea()" style="width: 100%; padding: 10px; font-weight: bold; cursor: pointer;">
+            <label for="area-select">1. Seleccione Área de la Planta:</label>
+            <select id="area-select" onchange="cambiarArea()" style="font-weight: bold; cursor: pointer;">
                 <option value="">-- Seleccione una opción --</option>
                 <option value="area1">1.- PATIO DE VIAS</option>
                 <option value="area2">2.- ANDEN DE CARGA</option>
@@ -196,8 +274,8 @@
         </div>
 
         <div class="form-group">
-            <label for="otros-select" style="font-size: 1em;">2. Controles e Inspecciones Especiales:</label>
-            <select id="otros-select" onchange="cambiarOtros()" style="width: 100%; padding: 10px; font-weight: bold; cursor: pointer;">
+            <label for="otros-select">2. Controles e Inspecciones Especiales:</label>
+            <select id="otros-select" onchange="cambiarOtros()" style="font-weight: bold; cursor: pointer;">
                 <option value="">-- Seleccione una opción --</option>
                 <option value="otro0">Calibración de Atmosferas</option>
                 <option value="otro1">Inspección de Escaleras Portátiles</option>
@@ -215,7 +293,7 @@
         </div>
     </div>
 
-    <p style="color: #555; font-style: italic;" id="instruccion-texto">← Seleccione un área o control especial arriba. Marque la casilla si observa anomalías para desplegar el catálogo de riesgos.</p>
+    <p class="instruccion" id="instruccion-texto">Por favor, seleccione un área o control especial en la parte superior. Marque la casilla si detecta anomalías.</p>
 
     <div id="referencias-contenedor"></div>
     <div id="otros-contenedor"></div>
@@ -226,9 +304,6 @@
 </div>
 
 <script>
-    // =========================================================================
-    // PEGA TU ENLACE DE GOOGLE EN LA VARIABLE DE ABAJO:
-    // =========================================================================
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyyZuLnXDjyPGvTdZ_kvt57h3CW3QFEWEkHl6Xu8uZSDB4uuSPMhU9yK0OasjtbUjKX/exec";
 
     const catalogoDeficiencias = [
@@ -271,7 +346,6 @@
             opcionesRiesgosHTML += `<option value="${def}">${def}</option>`;
         });
 
-        // Cargar Áreas
         for (let id in baseDatosAreas) {
             let area = baseDatosAreas[id];
             let divArea = document.createElement('div');
@@ -300,7 +374,7 @@
                                 <select id="tipo-${itemId}">${opcionesRiesgosHTML}</select>
                             </div>
                             <div class="form-group">
-                                <label>Notas y Detalles Específicos (Opcional):</label>
+                                <label>Notas y Detalles Específicos:</label>
                                 <textarea id="obs-${itemId}" placeholder="Ej: Guarda floja, falta de orden..." rows="2"></textarea>
                             </div>
                         </div>
@@ -311,7 +385,6 @@
             contenedorRef.appendChild(divArea);
         }
 
-        // Cargar Especiales
         const contenedorOtros = document.getElementById('otros-contenedor');
         otrosItems.forEach((otro, index) => {
             let itemId = `otro-item-${index}`;
@@ -383,7 +456,7 @@
         const badge = document.getElementById(`badge-${id}`);
 
         if (checkbox.checked) {
-            panel.style.display = 'grid';
+            panel.style.display = 'flex';
             contenedor.classList.add('con-deficiencia');
             badge.innerText = "Con Deficiencia";
         } else {
@@ -440,8 +513,8 @@
             reportes: deficienciasEncontradas
         };
 
-        if(WEB_APP_URL === "PEGA_AQUI_TU_URL_DE_GOOGLE_APPS_SCRIPT" || WEB_APP_URL.trim() === "") {
-            alert("Atención: No has pegado la URL de tu Google Script en la parte superior del código (Variable WEB_APP_URL).");
+        if(WEB_APP_URL === "" || WEB_APP_URL.includes("PEGA_AQUI")) {
+            alert("Atención: No has configurado correctamente la URL de tu Google Script.");
             return;
         }
 
@@ -452,7 +525,7 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(paquete)
         }).then(() => {
-            alert("¡Reporte enviado! Los datos se cargaron al Excel para su respectivo seguimiento.");
+            alert("¡Reporte enviado! Los datos se cargaron al Excel correctamente.");
         }).catch(err => {
             alert("Error al enviar: " + err);
         });
